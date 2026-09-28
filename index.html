@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChronosArchive - คลังความรู้และแหล่งอ้างอิงประวัติศาสตร์โลก</title>
+    <!-- Google Fonts: Sarabun & Playfair Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome สำหรับไอคอน -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-pink: #d81b60;
+            --light-pink: #fce4ec;
+            --deep-red: #880e4f;
+            --accent-red: #c2185b;
+            --bg-color: #fff5f8;
+            --text-dark: #2d132c;
+            --card-bg: #ffffff;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .logo-text {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* --- NAVIGATION --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 245, 248, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(136, 14, 79, 0.08);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            transition: var(--transition);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--deep-red);
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .logo i {
+            color: var(--primary-pink);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-pink);
+            transition: var(--transition);
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--deep-red);
+        }
+
+        nav a:hover::after, nav a.active::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--deep-red);
+        }
+
+        /* --- MAIN CONTAINER & PAGES --- */
+        .page-container {
+            margin-top: 90px;
+            min-height: calc(100vh - 90px);
+            padding: 3rem 5%;
+        }
+
+        .section-page {
+            display: none;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .section-page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- HOME LAYOUT (Timeline / Archive Style) --- */
+        .hero-archive {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 4rem;
+            align-items: center;
+            padding: 2rem 0;
+        }
+
+        .hero-content h1 {
+            font-size: 3.2rem;
+            color: var(--deep-red);
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-content p {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            color: #55424c;
+        }
+
+        .btn-archive {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-red));
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(216, 27, 96, 0.3);
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-archive:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(136, 14, 79, 0.4);
+        }
+
+        .hero-visual {
+            position: relative;
+            background: var(--light-pink);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(216, 27, 96, 0.1);
+        }
+
+        .hero-visual img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* --- SOURCES / DATABASE LAYOUT (Grid Cards) --- */
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--deep-red);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title p {
+            color: #66505c;
+            font-size: 1.1rem;
+        }
+
+        .sources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .source-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(136, 14, 79, 0.05);
+            border-top: 5px solid var(--primary-pink);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .source-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(216, 27, 96, 0.15);
+        }
+
+        .source-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.2rem;
+        }
+
+        .source-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--light-pink);
+            color: var(--deep-red);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .source-card h3 {
+            font-size: 1.3rem;
+            color: var(--deep-red);
+        }
+
+        .source-card p {
+            font-size: 0.95rem;
+            color: #55424c;
+            margin-bottom: 1.5rem;
+        }
+
+        .source-features {
+            background: var(--bg-color);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            border-left: 3px solid var(--accent-red);
+        }
+
+        .source-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-pink);
+            text-decoration: none;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .source-link:hover {
+            color: var(--deep-red);
+            gap: 12px;
+        }
+
+        /* --- GUIDE / TIPS LAYOUT (Interactive Accordion / Cards) --- */
+        .guide-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .guide-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(136, 14, 79, 0.05);
+            margin-bottom: 2rem;
+            border-left: 6px solid var(--deep-red);
+        }
+
+        .guide-box h3 {
+            color: var(--deep-red);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .guide-box p, .guide-box ul {
+            color: #55424c;
+            font-size: 1.05rem;
+        }
+
+        .guide-box ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .guide-box li {
+            margin-bottom: 8px;
+        }
+
+        /* --- ABOUT / CITATION WIDGET LAYOUT --- */
+        .citation-tool {
+            background: linear-gradient(135deg, var(--deep-red), var(--primary-pink));
+            color: #fff;
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(136, 14, 79, 0.2);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .citation-tool h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .citation-tool p {
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .citation-output {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: monospace;
+            text-align: left;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            word-break: break-all;
+        }
+
+        .btn-copy {
+            background: #fff;
+            color: var(--deep-red);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-copy:hover {
+            background: var(--light-pink);
+            transform: scale(1.05);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 2.5rem;
+            background: #f4d0d8;
+            color: var(--deep-red);
+            font-weight: 500;
+            margin-top: 4rem;
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 900px) {
+            .hero-archive {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            .btn-archive {
+                margin: 0 auto;
+            }
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #fff5f8;
+                padding: 1.5rem;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+                text-align: center;
+            }
+            nav ul.show {
+                display: flex;
+            }
+            .menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Interactive Menu -->
+    <header>
+        <div class="logo" onclick="switchPage('home')">
+            <i class="fa-solid fa-landmark-dome"></i>
+            <span class="logo-text">ChronosArchive</span>
+        </div>
+        <div class="menu-toggle" id="mobile-menu">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+        <nav>
+            <ul id="nav-list">
+                <li><a class="nav-link active" onclick="switchPage('home')">หน้าแรก</a></li>
+                <li><a class="nav-link" onclick="switchPage('sources')">แหล่งข้อมูลอ้างอิง</a></li>
+                <li><a class="nav-link" onclick="switchPage('guide')">คำแนะนำเชิงลึก</a></li>
+                <li><a class="nav-link" onclick="switchPage('citation')">คัดลอกบรรณานุกรม</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content Container (Multi-Page Single-File Mode) -->
+    <div class="page-container">
+
+        <!-- 1. หน้าแรก (Home Page) -->
+        <section id="home" class="section-page active">
+            <div class="hero-archive">
+                <div class="hero-content">
+                    <h1>คลังสรรพความรู้และแผนที่ประวัติศาสตร์โลก</h1>
+                    <p>รวบรวมแหล่งข้อมูลประวัติศาสตร์ระดับสากล ผ่านการตรวจสอบโดยผู้เชี่ยวชาญและนักประวัติศาสตร์มืออาชีพ ค้นคว้าเรื่องราวอารยธรรม ยุคสมัย และเหตุการณ์สำคัญได้อย่างแม่นยำและน่าเชื่อถือ</p>
+                    <button class="btn-archive" onclick="switchPage('sources')">
+                        สำรวจแหล่งข้อมูล <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="hero-visual">
+                    <img src="https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=800&q=80" alt="Historical Archives and Books">
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. แหล่งข้อมูลอ้างอิง (Sources Page) -->
+        <section id="sources" class="section-page">
+            <div class="section-title">
+                <h2>ฐานข้อมูลประวัติศาสตร์หลัก</h2>
+                <p>คัดสรรเว็บไซต์และสารานุกรมประวัติศาสตร์ที่ได้รับการยอมรับระดับโลก</p>
+            </div>
+            <div class="sources-grid">
+                <!-- Source 1 -->
+                <div class="source-card">
+                    <div>
+                        <div class="source-header">
+                            <div class="source-icon"><i class="fa-solid fa-book-bookmark"></i></div>
+                            <h3>Encyclopedia Britannica</h3>
+                        </div>
+                        <p>สารานุกรมเก่าแก่และน่าเชื่อถือที่สุด เนื้อหาผ่านการตรวจสอบโดยผู้เชี่ยวชาญและนักประวัติศาสตร์ชื่อดัง</p>
+                        <div class="source-features">
+                            <strong>หมวดหมู่หลัก:</strong> World History, Eras, Biographies
+                        </div>
+                    </div>
+                    <a href="https://www.britannica.com" target="_blank" class="source-link">เข้าสู่เว็บไซต์ <i class="fa-solid fa-external-link-alt"></i></a>
+                </div>
+                <!-- Source 2 -->
+                <div class="source-card">
+                    <div>
+                        <div class="source-header">
+                            <div class="source-icon"><i class="fa-solid fa-film"></i></div>
+                            <h3>History.com</h3>
+                        </div>
+                        <p>นำเสนอเนื้อหาทั้งบทความเชิงลึก สารคดี และไทม์ไลน์เหตุการณ์สำคัญ ย่อยเรื่องยากให้เข้าใจง่าย</p>
+                        <div class="source-features">
+                            <strong>หมวดหมู่หลัก:</strong> Topics, History News, This Day in History
+                        </div>
+                    </div>
+                    <a href="https://www.history.com" target="_blank" class="source-link">เข้าสู่เว็บไซต์ <i class="fa-solid fa-external-link-alt"></i></a>
+                </div>
+                <!-- Source 3 -->
+                <div class="source-card">
+                    <div>
+                        <div class="source-header">
+                            <div class="source-icon"><i class="fa-solid fa-landmark"></i></div>
+                            <h3>BBC History</h3>
+                        </div>
+                        <p>บทความทางประวัติศาสตร์จากสำนักข่าว BBC สหราชอาณาจักร เขียนโดยนักวิชาการและศาสตราจารย์มหาวิทยาลัย</p>
+                        <div class="source-features">
+                            <strong>หมวดหมู่หลัก:</strong> World History, Ancient History, World Wars
+                        </div>
+                    </div>
+                    <a href="https://www.bbc.co.uk/history" target="_blank" class="source-link">เข้าสู่เว็บไซต์ <i class="fa-solid fa-external-link-alt"></i></a>
+                </div>
+                <!-- Source 4 -->
+                <div class="source-card">
+                    <div>
+                        <div class="source-header">
+                            <div class="source-icon"><i class="fa-solid fa-globe"></i></div>
+                            <h3>World History Encyclopedia</h3>
+                        </div>
+                        <p>องค์กรไม่แสวงหากำไรยอดนิยมของนักเรียนและนักวิจัย ครอบคลุมอารยธรรมโบราณทั่วโลกพร้อมระบบเชื่อมโยงคำสำคัญ</p>
+                        <div class="source-features">
+                            <strong>หมวดหมู่หลัก:</strong> Eras, Cultures, Subjects (Art, Religion, War)
+                        </div>
+                    </div>
+                    <a href="https://www.worldhistory.org" target="_blank" class="source-link">เข้าสู่เว็บไซต์ <i class="fa-solid fa-external-link-alt"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. คำแนะนำเชิงลึก (Guide Page) -->
+        <section id="guide" class="section-page">
+            <div class="section-title">
+                <h2>คำแนะนำและวิธีค้นคว้าประวัติศาสตร์</h2>
+                <p>เทคนิคการเจาะลึกข้อมูลเฉพาะประเด็นให้ได้เนื้อหาที่เป็นระบบและผ่านการกลั่นกรอง</p>
+            </div>
+            <div class="guide-container">
+                <div class="guide-box">
+                    <h3><i class="fa-solid fa-lightbulb"></i> เทคนิคการใช้ระบบ Citation (การอ้างอิง)</h3>
+                    <p>เว็บไซต์ประวัติศาสตร์ชั้นนำส่วนใหญ่จะมีปุ่ม <strong>"Cite"</strong> หรือข้อมูลบรรณานุกรมในรูปแบบมาตรฐานสากล (APA, MLA, Chicago) ที่ท้ายบทความ คุณสามารถคัดลอกข้อความเหล่านั้นไปใส่ในรายงานหรือเอกสารอ้างอิงของคุณได้ทันทีโดยไม่ต้องจัดรูปแบบเอง</p>
+                </div>
+                <div class="guide-box">
+                    <h3><i class="fa-solid fa-magnifying-glass"></i> การเจาะลึกรายหัวข้อเฉพาะเจาะจง</h3>
+                    <p>หากคุณต้องการค้นหาข้อมูลจำเพาะ เช่น เหตุการณ์สงครามเย็น (Cold War) หรือยุคเรเนซองส์ (Renaissance) แนะนำให้ใช้เครื่องมือค้นหา (Search Bar) ภายในเว็บไซต์ <strong>World History Encyclopedia</strong> หรือ <strong>Britannica</strong> โดยตรง เพื่อรับข้อมูลที่ผ่านการตรวจสอบและจัดหมวดหมู่ไว้อย่างเป็นระเบียบเรียบร้อย</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. คัดลอกบรรณานุกรม (Citation Tool Page) -->
+        <section id="citation" class="section-page">
+            <div class="citation-tool">
+                <h2>เครื่องมือคัดลอกบรรณานุกรมด่วน</h2>
+                <p>คัดลอกรูปแบบการอ้างอิงแหล่งข้อมูลหลักเพื่อนำไปใช้ในงานเขียนของคุณได้ทันที</p>
+                <div class="citation-output" id="cite-text">
+                    World History Foundation. (2026). World History Encyclopedia. Retrieved from https://www.worldhistory.org
+                </div>
+                <button class="btn-copy" onclick="copyCitation()">
+                    <i class="fa-regular fa-copy"></i> คัดลอกข้อความอ้างอิง
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 ChronosArchive. คลังข้อมูลและแผนที่ประวัติศาสตร์โลก | ออกแบบตามมาตรฐาน Open Web</p>
+    </footer>
+
+    <!-- JavaScript สำหรับควบคุมการสลับหน้าและ Responsive Menu -->
+    <script>
+        function switchPage(pageId) {
+            // ซ่อนทุกหน้า
+            const pages = document.querySelectorAll('.section-page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // แสดงหน้าที่เลือก
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            // อัปเดตสถานะเมนู Active
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            // หาลิงก์ที่ตรงกันแล้วเติมคลาส active
+            event.currentTarget; // ถ้ากดจากปุ่มโลโก้จะไม่มี event.target แบบ nav แต่เราจัดการได้
+            
+            // ปิดเมนูมือถืออัตโนมัติเมื่อกดเลือก
+            document.getElementById('nav-list').classList.remove('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // เชื่อมโยง Active state ของเมนูด้านบนผ่าน Event Listener
+        const navLinks = document.querySelectorAll('nav a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Toggle Responsive Menu สำหรับมือถือ
+        const mobileMenuBtn = document.getElementById('mobile-menu');
+        const navList = document.getElementById('nav-list');
+        mobileMenuBtn.addEventListener('click', () => {
+            navList.classList.toggle('show');
+        });
+
+        // ฟังก์ชันคัดลอกบรรณานุกรม
+        function copyCitation() {
+            const citeText = document.getElementById('cite-text').innerText;
+            navigator.clipboard.writeText(citeText).then(() => {
+                alert('คัดลอกข้อมูลอ้างอิงเรียบร้อยแล้ว!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
